@@ -56,11 +56,11 @@ steam_activate_key(key){ 					;method that takes a string variable (the key) and
 	steam_wait_until_done()
 	if(steam_check_if_key_worked()){
 		applog("[sucessfull] key activated without problems !")
-		log_to_file(", 'success' => 'true'",false)
+		;log_to_file(", 'success' => 'true'",false)
 		;log_to_file("		<---- Activated",false)
 	}else{
 		applog("[faillure] key failed to activate !")
-		log_to_file(", 'success' => 'false' ",false)
+		;log_to_file(", 'success' => 'false' ",false)
 		;log_to_file("		<---- Failed",false)
 
 	}
@@ -72,21 +72,21 @@ steam_activate_key(key){ 					;method that takes a string variable (the key) and
 
 steam_click_next(){							;click the next button 
 	steam_activate_window()
-	MouseClick, left,  320,  575 ;click next
+	MouseClick, left,  287,  373 ;click next
 	applog("> clicked next 		[activation]")
 	Sleep,100
 	return
 }
 steam_click_cancel(){						;click the cancel button
 	steam_activate_window()
-	MouseClick, left,  422,  568 ;click cancel.
+	MouseClick, left,  404,  373 ;click cancel.
 	applog("> clicked cancel 	[activation]")
 	Sleep,100
 	return
 }
 steam_click_back(){							;click the back button
 	steam_activate_window()
-	MouseClick, left,  212,  568 ;click back
+	MouseClick, left,  194,  373 ;click back
 	applog("> clicked back 		[activation]")
 	Sleep,100
 	return
@@ -100,7 +100,7 @@ steam_click_print(){						;click the print button
 }
 steam_install_click_back(){ 				;install window click back
 	steam_activate_install()
-	MouseClick, left,  212,  568 ;click back
+	MouseClick, left,  194,  373 ;click back
 	applog("> clicked back  	[install]")
 	Sleep,100
 	return
@@ -108,14 +108,14 @@ steam_install_click_back(){ 				;install window click back
 }
 steam_install_click_cancel(){ 				;install window click cancel
 	steam_activate_install()
-	MouseClick, left,  422,  568 ;click cancel.
+	MouseClick, left,  404,  373 ;click cancel.
 	applog("> clicked cancel 	[install]")
 	Sleep,100
 	return
 }
 steam_install_click_next(){ 				;install window click next
 	steam_activate_install()
-	MouseClick, left,  320,  575 ;click next
+	MouseClick, left,  287,  373 ;click next
 	applog("> clicked next 		[install]")
 	Sleep,100
 	return
@@ -209,6 +209,7 @@ steam_check_if_key_worked(){ 				;check if steam key worked
 	applog("we need to check if the key worked")
 	if(steam_check_invalid_or_too_many_attempts()){
 		applog("product code invalid or to many key tries")
+		log_to_file(", <---- Failed",false)
 		;Steam is whining (to many keys tries, or product code is invalid)
 		steam_click_cancel()
 		return false
@@ -218,16 +219,6 @@ steam_check_if_key_worked(){ 				;check if steam key worked
 		;make a difference between existing product and new product.
 		;we need to press the print button & close that window again
 		applog("checking if this is a new product")
-		steam_click_print()
-		if(is_print_window()){
-			applog("[new product] we activated a new product")
-			log_to_file(", 'new product' => 'true'",false)
-			;this means there is a print window & we closed it.
-		}else{
-			applog("[duplicate product] we activated a duplicate product")
-			log_to_file(", 'new product' => 'false'",false)
-			;this means there is a print window & we closed it.
-		}
 		steam_click_next() ;we click next (past print screen)
 		applog("now we need to check if we are on the install screen")
 		;in order to see if they key worked we need to check if we are on the install screen, if we are press cancel & report that the key worked
@@ -238,7 +229,7 @@ steam_check_if_key_worked(){ 				;check if steam key worked
 }
 steam_check_invalid_or_too_many_attempts(){ ;check if steam is angry at us
 	steam_activate_window()
-	MouseMove, 61,  207 ;move mouse to the invalid link
+	MouseMove, 55,  224 ;move mouse to the invalid link
 	applog("moved mouse to check if there is an invalid link")
 	Sleep,100
 	If(A_Cursor = "Unknown"){
@@ -260,6 +251,7 @@ steam_check_if_on_install_screen(){			;check if we are on the install screen
 	StringTrimLeft,gameTitle,WindowTitle,10
 	applog("adding game title to key log")
 	log_to_file(", 'game' => '" . gameTitle . "'",false)
+	log_to_file(", <---- Activated",false)
 }
 is_print_window(){							;way to check if we have a new product or a duplicate
 	applog("waiting 5 seconds for the print window to pop up")
@@ -336,5 +328,3 @@ applog("pressed escape!")
 applog(" ----- App End ------")
 ExitApp
 Return
-
-
